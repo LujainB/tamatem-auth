@@ -2,12 +2,12 @@
 
 This repository has been created to ease the job of authentication and integration process with Tamatem platform just by implementing the following steps:
 
-- Unity Integration:
+## Unity Integration:
 
 <!-- Pull from GitHub -->
 
 
-- Android Setup:
+## Android Setup:
 
 Once your Unity project is ready and you want to setup your Android game/app, please follow the steps below:
 1. Go to File -> Build Settings...
@@ -18,8 +18,8 @@ Once your Unity project is ready and you want to setup your Android game/app, pl
 6. Voila! you are ready to go and use your app.
 
 
-- iOS Setup:
+## iOS Setup:
 
 
-- SDK API:
+## SDK API:
 

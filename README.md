@@ -4,8 +4,7 @@ This repository has been created to ease the job of authentication and integrati
 
 ## Unity Integration:
 
-<!-- Pull from GitHub -->
-
+ // todo set gameID & redirectURI
 
 ## Android Setup:
 
@@ -33,3 +32,35 @@ Once your Unity project is ready and you want to setup your iOS game/app, please
 
 ## SDK API:
 
+### Runtime/AuthenticationBehaviour.cs
+###Class TamatemSDK
+
+#### bool isLoggedIn()
+returns if user is logged in
+#### void authenticate()
+triggers native authentication process
+#### Item[] purchasedInventory()
+returns all items
+#### Item[] filterInventory(bool isRedeemed)
+returns redeemed or non redeemed items based on isRedeemed
+#### bool redeemedItem(int ID)
+redeems items
+returns true if successful
+#### getUserInfo()
+returns JToken containing the following
+```json
+{
+"id": 16,
+"first_name": "Moath Test",
+"last_name": "Test",
+"email": "tesasdt+1@teasdsa3dasdasdasdst.com",
+"country": "american-samoa",
+"phone_number": "+962797351170",
+"date_of_birth": "2022-05-14",
+"sign_up_through": "email",
+"gender": "f",
+"qr_code": "/media/qr-codes/PR22000006.png",
+"avatar": null,
+"tamatem_id": "PR22000006"
+}
+```

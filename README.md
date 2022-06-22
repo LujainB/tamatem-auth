@@ -20,6 +20,16 @@ Once your Unity project is ready and you want to setup your Android game/app, pl
 
 ## iOS Setup:
 
+Once your Unity project is ready and you want to setup your iOS game/app, please follow the steps below:
+1. Go to File -> Build Settings...
+2. Press on "Build And Run" and choose the folder that will contain the iOS project.
+3. Once its finished, it will open the project on xCode.
+4. Go to "Unity-iPhone" Target and open the "Build Phase" tab.
+5. Expand the "Embed Frameworks" section and press the "+" button.
+6. Type "keyCSDK" to add "keyCSDK.framework".
+7. Now Make sure to stop all previous running tasks and run the app again.
+8. Congrats! your iOS app is ready to go.
+
 
 ## SDK API:
 

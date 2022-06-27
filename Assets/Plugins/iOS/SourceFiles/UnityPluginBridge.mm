@@ -8,44 +8,36 @@
 #import <Foundation/Foundation.h>
 #import <AuthenticationServices/ASWebAuthenticationSession.h>
 #import <KeyCSDK/KeyCSDK-Swift.h>
-#import "UserInfoClass.h"
-#import "UnityPluginBridge.h"
 
-DelegateCallbackFunction delegate = NULL;
-@interface UnityPluginBridge : NSObject<UserInfoDelegate>
-@end
-static UnityPluginBridge *__delegate = nil;
-
-char* convertNSStringToCString(const NSString* nsString)
+// alloc char and copy new instence editable
+char* cStringCopy(const char* string)
 {
-    if (nsString == NULL)
+    if (string == NULL)
         return NULL;
-
-    const char* nsStringUtf8 = [nsString UTF8String];
-    //create a null terminated C string on the heap so that our string's memory isn't wiped out right after method's return
-    char* cString = (char*)malloc(strlen(nsStringUtf8) + 1);
-    strcpy(cString, nsStringUtf8);
-
-    return cString;
-}
-
-void framework_Authenticate(char* clientID, char* scheme, char* redirectURI) {
-    [UserInfoClass _Authenticate:(char *)clientID :(char *)scheme :(char *)redirectURI];
-}
-
-void framework_setDelegate(DelegateCallbackFunction callback) {
-    if (!__delegate) {
-        __delegate = [[UnityPluginBridge alloc] init];
-    }
-    [UserInfoClass setDelegate:__delegate];
-    [[UnityPlugin shared] setCallbackWithDelegate:__delegate];
     
-    delegate = callback;
+    char* res = (char*)malloc(strlen(string) + 1);
+    strcpy(res, string);
+    
+    return res;
 }
-@implementation UnityPluginBridge
-- (void)onSuccessWithTokenModel:(NSString*)tokenModel {
-    if (delegate != NULL) {
-        delegate(convertNSStringToCString(tokenModel));
+
+//exposes Functions to the header file
+extern "C" {
+    
+#pragma mark - Functions
+    
+    int _addTwoNumberInIOS(int a , int b) {
+        int result = [[UnityPlugin shared] AddTwoNumbersWithA:a b:b];
+        return result;
     }
+    
+    char* _GetName() {
+        return cStringCopy([[[UnityPlugin shared] getName] UTF8String]);
+    }
+
+    TokenModel* _Authenticate(char* scheme, char* redirectURI) {
+
+        return [[UnityPlugin shared ] authenticateWithScheme:[NSString stringWithUTF8String: scheme] redirectURI:[NSString stringWithUTF8String: redirectURI]];
+    }
+
 }
-@end

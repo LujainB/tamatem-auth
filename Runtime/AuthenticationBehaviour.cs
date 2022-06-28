@@ -4,14 +4,64 @@ using UnityEngine;
 using System.Dynamic;
 using UnityEngine.Networking;
 using System;
+using Newtonsoft.Json.Linq;
+using UnityEngine.SceneManagement;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using AOT;
 
-namespace AuthenticationScope 
+namespace AuthenticationScope
 {
 
- 
+
     public class AuthenticationBehaviour : MonoBehaviour
     {
-        public void InitializeAuth() 
+
+        [DllImport("__Internal")]
+        private static extern void framework_Authenticate(string clientID, string scheme, string redirectURI);
+
+        [DllImport("__Internal")]
+        private static extern void framework_setDelegate(DelegateCallbackFunction callback);
+
+        public delegate void DelegateCallbackFunction(string tokenModel);
+
+        [MonoPInvokeCallback(typeof(DelegateCallbackFunction))]
+        public static void onSuccess(string tokenModel) {
+            Debug.Log("User Logged in iOS");
+            Debug.Log("Message received: " + tokenModel);
+
+            var result = JObject.Parse(tokenModel);
+            mono.updateUserParameters(result);
+        }
+
+        private static AuthenticationBehaviour mono;
+
+        internal static AuthenticationBehaviour wkr;
+        Queue<Action> jobs = new Queue<Action>();
+
+        void Awake() {
+            wkr = this;
+        }
+
+        void Update() {
+            while (jobs.Count > 0)
+                jobs.Dequeue().Invoke();
+        }
+
+        internal void AddJob(Action newJob) {
+            jobs.Enqueue(newJob);
+        }
+
+        private string _accessToken {get; set;}
+        private long _expiry{get; set;}
+        private string _refreshToken {get; set; }
+        private JToken _user {get; set; }
+
+        void Start() {
+            mono = this;
+        }
+
+        public void InitializeAuth()
         {
             #if UNITY_ANDROID && !UNITY_EDITOR
                 using(AndroidJavaClass activityClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer")) {
@@ -20,55 +70,42 @@ namespace AuthenticationScope
                     {
                         AndroidJavaClass tamatemClass = new AndroidJavaClass("com.tamatem.auth.TamatemAuth");
                         AndroidJavaObject authInstance = tamatemClass.CallStatic<AndroidJavaObject>("getInstance");
-                        authInstance.Call("startLoginProcess", activityContext, "pi4dEipJyFLDbO9DOYWFlolNpOgzjjYI2oq0qVJz", "game1://oauth-callback", new AndroidPluginCallback());
+                        authInstance.Call("startLoginProcess", activityContext, "pi4dEipJyFLDbO9DOYWFlolNpOgzjjYI2oq0qVJz", "game1://oauth-callback", new AndroidPluginCallback(mono));
                     }));
                 }
             #endif
-        }
-    }
-
-    class AndroidPluginCallback : AndroidJavaProxy
-    {
-        public AndroidPluginCallback() : base ("com.tamatem.auth.TamatemAuth$AuthorizationCallback") {}
-    
-        void onSuccess(AndroidJavaObject obj)
-        {
-            Debug.Log("Results retreived successfully!!");
-            Debug.Log("Token retreived from Unity: " + obj);
-
-            // TamatemSDK.SetAccesToken(obj.accessToken);
-            // TamatemSDK.SetRefreshToken(obj.accessToken);
-            // TamatemSDK.SetExpiry(obj.accessToken);
-            // TamatemSDK.SetStringifiedUser(obj.accessToken);
+            #if UNITY_IOS && !UNITY_EDITOR
+                framework_setDelegate(onSuccess);
+                framework_Authenticate("pi4dEipJyFLDbO9DOYWFlolNpOgzjjYI2oq0qVJz", "game1", "game1://oauth-callback");
+            #endif
         }
 
-        void onFail() 
-        {
-            Debug.Log("Failed to retreive token");
+        public void updateUserParameters(JObject result) {
+
+            SetAccessToken(result["access_token"].ToObject<string>());
+            SetRefreshToken(result["refresh_token"].ToObject<string>());
+            SetExpiry(result["expires_in"].ToObject<long>());
+            SetUser(result["user"]);
+
+            Debug.Log("Before Coroutine!");
+            AuthenticationBehaviour.wkr.AddJob(() => {
+                // Will run on main thread, hence issue is solved
+                StartCoroutine(purchasedInventory());
+            });
+            Debug.Log("After Coroutine!");
         }
-    }
 
-    interface Item {
-        string type;
-        
-    }
+        private DateTime _JanFirst1970 = new DateTime(1970, 1, 1);
 
-    public class TamatemSDK : MonoBehaviour{
-        private string _accessToken {get; set;}
-        private int _expiry{get; set;}
-        private string _refreshToken {get; set; }
-        private string _strigifiedUser {get; set; }
-
-        private static DateTime _JanFirst1970 = new DateTime(1970, 1, 1);
-
-        public string GetAccesToken()
+        public string GetAccessToken()
         {
             return _accessToken;
         }
 
-        public void SetAccesToken(string accessToken)
+        public void SetAccessToken(string accessToken)
         {
             _accessToken = accessToken;
+            Debug.Log("Access Token " + _accessToken);
         }
 
         public string GetRefreshToken()
@@ -79,36 +116,38 @@ namespace AuthenticationScope
         public void SetRefreshToken(string refreshToken)
         {
             _refreshToken = refreshToken;
-        }        
-        public int GetExpiry()
+            Debug.Log("Refresh Token " + _refreshToken);
+        }
+        public long GetExpiry()
         {
             return _expiry;
         }
 
-        public void SetExpiry(int expiry)
+        public void SetExpiry(long expiry)
         {
-            _expiry = expiry;
-        }        
-        
-        public string GetStringifiedUser()
-        {
-            return _strigifiedUser;
+            _expiry = expiry + _getTime();
+            Debug.Log("Expiry " + _expiry);
         }
 
-        public void SetStringifiedUser(string userObjectString)
+        public JToken GetUser()
         {
-            _strigifiedUser = userObjectString;
+            return _user;
         }
 
-        private static long _getTime()
+        public void SetUser(JToken user)
+        {
+            _user = user;
+            Debug.Log("User " + _user);
+        }
+
+        private long _getTime()
         {
             return (long)((DateTime.Now.ToUniversalTime() - _JanFirst1970).TotalMilliseconds + 0.5);
         }
 
-
         public bool IsloggedIn()
         {
-           if (_accessToken == null && _getTime() < expiry)
+           if (_accessToken == null && _getTime() < _expiry)
            {
                 return false;
            }
@@ -117,46 +156,46 @@ namespace AuthenticationScope
            }
         }
 
+        IEnumerator purchasedInventory() {
 
-        public bool RefreshToken()
-        {
-            // List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
-            // formData.Add(new MultipartFormDataSection("field1=foo&field2=bar"));
-            // formData.Add(new MultipartFormFileSection("my file data", "myfile.txt"));
+            Debug.Log("Inside Coroutine!");
+             using (UnityWebRequest www = UnityWebRequest.Get("https://tamatem.dev.be.starmena-streams.com/api/inventory-item/")){
+                www.SetRequestHeader("Authorization", "Bearer " + _accessToken);
+                yield return www.Send();
 
-            // UnityWebRequest www = UnityWebRequest.Post("https://www.my-server.com/myform", formData);
-            // // var json = "{\"username\":\""+username+"\", \"password\":\""+password+"\", \"email\":\""+email+"\"}";
-
-            // www.SetRequestHeader("Content-Type", "application/json");
-            // yield return www.SendWebRequest();
-
-            // if (www.responseCode != 200)
-            // {
-            //     Debug.Log(www.error);
-            // }
-            // else
-            // {
-            //     Debug.Log("Form upload complete!");
-            // }
-        }
-
-
-        public 
-
-        public bool IsTokenReadyOrReferesh()
-        {
-            double timestampNow = 1498122000;
-            DateTime fecha = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc).AddSeconds(timestamp);
-            if(TamatemAuth.expiry <= timestampNow)
-            {
-                return true;
-            }
-            else
-            {
-                this.RefreshToken();
-            }
+                Debug.Log("purchased API sent!");
+                if (www.result != UnityWebRequest.Result.Success) {
+                    Debug.Log("purchased API Error!");
+                    Debug.Log(www.error);
+                }
+                else {
+                    Debug.Log("Form upload complete!");
+                    Debug.Log(www.downloadHandler.text);
+                }
+             }
         }
     }
 
+    class AndroidPluginCallback : AndroidJavaProxy
+    {
+        private AuthenticationBehaviour mono;
 
+        public AndroidPluginCallback(AuthenticationBehaviour mon) : base ("com.tamatem.auth.TamatemAuth$AuthorizationCallback") {
+            mono = mon;
+        }
+
+        void onSuccess(string obj)
+        {
+            Debug.Log("User Logged in Android!!");
+            Debug.Log("Token retrieved from Unity: " + obj);
+
+            var result = JObject.Parse(obj);
+            mono.updateUserParameters(result);
+        }
+
+        void onFail()
+        {
+            Debug.Log("Failed to retreive token");
+        }
+    }
 }

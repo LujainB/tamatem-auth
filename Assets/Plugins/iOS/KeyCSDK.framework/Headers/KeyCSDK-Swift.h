@@ -227,6 +227,7 @@ SWIFT_CLASS("_TtC7KeyCSDK10TokenModel")
 @interface TokenModel : NSObject
 @end
 
+@protocol UserInfoDelegate;
 @class NSString;
 
 SWIFT_CLASS("_TtC7KeyCSDK11UnityPlugin")
@@ -234,10 +235,15 @@ SWIFT_CLASS("_TtC7KeyCSDK11UnityPlugin")
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UnityPlugin * _Nonnull shared;)
 + (UnityPlugin * _Nonnull)shared SWIFT_WARN_UNUSED_RESULT;
 + (void)setShared:(UnityPlugin * _Nonnull)value;
-- (NSInteger)AddTwoNumbersWithA:(NSInteger)a b:(NSInteger)b SWIFT_WARN_UNUSED_RESULT;
-- (NSString * _Nonnull)getName SWIFT_WARN_UNUSED_RESULT;
-- (TokenModel * _Nullable)authenticateWithScheme:(NSString * _Nonnull)scheme redirectURI:(NSString * _Nonnull)redirectURI SWIFT_WARN_UNUSED_RESULT;
+- (void)setCallbackWithDelegate:(id <UserInfoDelegate> _Nonnull)delegate;
+- (void)authenticateWithClientID:(NSString * _Nonnull)clientID scheme:(NSString * _Nonnull)scheme redirectURI:(NSString * _Nonnull)redirectURI;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+@end
+
+
+SWIFT_PROTOCOL("_TtP7KeyCSDK16UserInfoDelegate_")
+@protocol UserInfoDelegate
+- (void)onSuccessWithTokenModel:(NSString * _Nullable)tokenModel;
 @end
 
 #if __has_attribute(external_source_symbol)

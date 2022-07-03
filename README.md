@@ -35,18 +35,15 @@ Once your Unity project is ready and you want to setup your iOS game/app, please
 ### Runtime/AuthenticationBehaviour.cs
 ###Class TamatemSDK
 
-#### bool isLoggedIn()
+#### bool IsloggedIn()
 returns if user is logged in
-#### void authenticate()
+#### void InitializeAuth()
 triggers native authentication process
-#### Item[] purchasedInventory()
+#### Item[] PurchasedInventory()
 returns all items
-#### Item[] filterInventory(bool isRedeemed)
+#### Item[] FilterInventory(bool isRedeemed)
 returns redeemed or non redeemed items based on isRedeemed
-#### bool redeemedItem(int ID)
-redeems items
-returns true if successful
-#### getUserInfo()
+#### GetUser()
 returns JToken containing the following
 ```json
 {

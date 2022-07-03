@@ -87,12 +87,10 @@ namespace AuthenticationScope
             SetExpiry(result["expires_in"].ToObject<long>());
             SetUser(result["user"]);
 
-            Debug.Log("Before Coroutine!");
-            AuthenticationBehaviour.wkr.AddJob(() => {
+            // AuthenticationBehaviour.wkr.AddJob(() => {
                 // Will run on main thread, hence issue is solved
-                StartCoroutine(purchasedInventory());
-            });
-            Debug.Log("After Coroutine!");
+                // StartCoroutine(purchasedInventory());
+            // });
         }
 
         private DateTime _JanFirst1970 = new DateTime(1970, 1, 1);
@@ -156,9 +154,8 @@ namespace AuthenticationScope
            }
         }
 
-        IEnumerator purchasedInventory() {
+        IEnumerator PurchasedInventory() {
 
-            Debug.Log("Inside Coroutine!");
              using (UnityWebRequest www = UnityWebRequest.Get("https://tamatem.dev.be.starmena-streams.com/api/inventory-item/")){
                 www.SetRequestHeader("Authorization", "Bearer " + _accessToken);
                 yield return www.Send();
@@ -166,6 +163,24 @@ namespace AuthenticationScope
                 Debug.Log("purchased API sent!");
                 if (www.result != UnityWebRequest.Result.Success) {
                     Debug.Log("purchased API Error!");
+                    Debug.Log(www.error);
+                }
+                else {
+                    Debug.Log("Form upload complete!");
+                    Debug.Log(www.downloadHandler.text);
+                }
+             }
+        }
+
+        IEnumerator FilterInventory(bool isRedeemed) {
+
+             using (UnityWebRequest www = UnityWebRequest.Get("https://tamatem.dev.be.starmena-streams.com/api/inventory-item/?is_redeemed=" + isRedeemed)){
+                www.SetRequestHeader("Authorization", "Bearer " + _accessToken);
+                yield return www.Send();
+
+                Debug.Log("filter API sent!");
+                if (www.result != UnityWebRequest.Result.Success) {
+                    Debug.Log("filter API Error!");
                     Debug.Log(www.error);
                 }
                 else {

@@ -17,11 +17,12 @@ namespace AuthenticationScope
     public class AuthenticationBehaviour : MonoBehaviour
     {
 
-        [DllImport("__Internal")]
-        private static extern void framework_Authenticate(string clientID, string scheme, string redirectURI);
-
-        [DllImport("__Internal")]
-        private static extern void framework_setDelegate(DelegateCallbackFunction callback);
+        #if UNITY_IOS
+            [DllImport("__Internal")]
+            private static extern void framework_Authenticate(string clientID, string scheme, string redirectURI);
+            [DllImport("__Internal")]
+            private static extern void framework_setDelegate(DelegateCallbackFunction callback);
+        #endif
 
         public delegate void DelegateCallbackFunction(string tokenModel);
 
@@ -44,8 +45,9 @@ namespace AuthenticationScope
         }
 
         void Update() {
-            while (jobs.Count > 0)
+            while (jobs.Count > 0) {
                 jobs.Dequeue().Invoke();
+            }
         }
 
         internal void AddJob(Action newJob) {

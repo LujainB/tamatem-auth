@@ -4,7 +4,6 @@ This repository has been created to ease the job of authentication and integrati
 
 ## Unity Integration:
 
- // todo set gameID & redirectURI
 
 ## Android Setup:
 

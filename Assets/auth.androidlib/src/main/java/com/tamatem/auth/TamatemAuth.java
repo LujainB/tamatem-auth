@@ -17,6 +17,8 @@ public class TamatemAuth {
     protected String clientId;
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     protected String redirectUri;
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    private boolean isDevelopment;
 
     private static TamatemAuth instance;
 
@@ -33,11 +35,12 @@ public class TamatemAuth {
     }
 
     public void startLoginProcess(Context context, String clientId, String redirectUri,
-                                  AuthorizationCallback authorizationCallback) {
+                                  boolean isDevelopment, AuthorizationCallback authorizationCallback) {
 
         this.authorizationCallback = authorizationCallback;
         this.clientId = clientId;
         this.redirectUri = redirectUri;
+        this.isDevelopment = isDevelopment;
         this.codeVerifier = generateRandomString();
 
         Intent intent = new Intent(context, LoadingActivity.class);
@@ -46,6 +49,10 @@ public class TamatemAuth {
         context.startActivity(intent);
     }
 
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    protected String getServerUrl() {
+        return isDevelopment ? "https://tamatem.dev.be.starmena-streams.com/api/o/" : "https://tamatem.prod.be.starmena-streams.com/api/o/";
+    }
 
     private String generateRandomString() {
         int stringLength = 45;

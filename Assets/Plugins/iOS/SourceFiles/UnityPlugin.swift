@@ -24,8 +24,9 @@ import KeyCSDK
     
     @objc public func authenticate(clientID: String,
                                    scheme: String,
-                                   redirectURI: String) {
-        authManager.auth(clientID: clientID, scheme: scheme, redirectURI: redirectURI) { [weak self] result in
+                                   redirectURI: String,
+                                   isDevelopment: Bool) {
+        authManager.auth(clientID: clientID, scheme: scheme, redirectURI: redirectURI, isDevelopment: isDevelopment) { [weak self] result in
             guard let `self` = self else {
                 return
             }

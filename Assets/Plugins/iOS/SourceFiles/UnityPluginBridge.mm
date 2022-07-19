@@ -29,8 +29,8 @@ char* convertNSStringToCString(const NSString* nsString)
     return cString;
 }
 
-void framework_Authenticate(char* clientID, char* scheme, char* redirectURI) {
-    [UserInfoClass _Authenticate:(char *)clientID :(char *)scheme :(char *)redirectURI];
+void framework_Authenticate(char* clientID, char* scheme, char* redirectURI, bool isDevelopment) {
+    [UserInfoClass _Authenticate:(char *)clientID :(char *)scheme :(char *)redirectURI :(bool)isDevelopment];
 }
 
 void framework_setDelegate(DelegateCallbackFunction callback) {

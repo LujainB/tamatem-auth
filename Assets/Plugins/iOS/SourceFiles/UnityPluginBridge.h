@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-    void framework_Authenticate(char* clientID, char* scheme, char* redirectURI);
+    void framework_Authenticate(char* clientID, char* scheme, char* redirectURI, bool isDevelopment);
     typedef void (*DelegateCallbackFunction)(char* tokenModel);
     void framework_setDelegate(DelegateCallbackFunction callback);
     

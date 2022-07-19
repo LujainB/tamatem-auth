@@ -236,7 +236,7 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, strong) UnityPlugin * _Nonnull
 + (UnityPlugin * _Nonnull)shared SWIFT_WARN_UNUSED_RESULT;
 + (void)setShared:(UnityPlugin * _Nonnull)value;
 - (void)setCallbackWithDelegate:(id <UserInfoDelegate> _Nonnull)delegate;
-- (void)authenticateWithClientID:(NSString * _Nonnull)clientID scheme:(NSString * _Nonnull)scheme redirectURI:(NSString * _Nonnull)redirectURI;
+- (void)authenticateWithClientID:(NSString * _Nonnull)clientID scheme:(NSString * _Nonnull)scheme redirectURI:(NSString * _Nonnull)redirectURI isDevelopment:(BOOL)isDevelopment;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 

@@ -15,11 +15,12 @@
 
 id __delegate = nil;
 
-+(void)_Authenticate:(char*)clientID: (char*)scheme: (char*)redirectURI
++(void)_Authenticate:(char*)clientID: (char*)scheme: (char*)redirectURI: (bool)isDevelopment
 {
     [[UnityPlugin shared ] authenticateWithClientID:[NSString stringWithUTF8String: clientID]
                                              scheme:[NSString stringWithUTF8String: scheme]
-                                        redirectURI:[NSString stringWithUTF8String: redirectURI]];
+                                        redirectURI:[NSString stringWithUTF8String: redirectURI]
+                                        isDevelopment: isDevelopment];
 }
 +(void)setDelegate:(id<UserInfoDelegate>)delegate {
     __delegate = delegate;

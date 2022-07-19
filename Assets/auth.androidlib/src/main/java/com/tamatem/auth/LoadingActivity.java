@@ -51,7 +51,7 @@ public class LoadingActivity extends Activity {
             e.printStackTrace();
         }
         String authURLStr =
-                "https://tamatem.dev.be.starmena-streams.com/api/o/authorize?client_id=" + tamatemAuth.clientId +
+                TamatemAuth.getInstance().getServerUrl() + "authorize?client_id=" + tamatemAuth.clientId +
                         "&response_type=code&redirect_uri=" + tamatemAuth.redirectUri +
                         "&code_challenge=" + cypheredString +
                         "&code_challenge_method=S256";

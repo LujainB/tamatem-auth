@@ -8,6 +8,6 @@
 #import <Foundation/Foundation.h>
 
 @interface UserInfoClass : NSObject
-+(void)_Authenticate:(char*)clientID: (char*)scheme: (char*)redirectURI;
++(void)_Authenticate:(char*)clientID: (char*)scheme: (char*)redirectURI: (bool)isDevelopment;
 +(void)setDelegate:(id<UserInfoDelegate>)delegate;
 @end

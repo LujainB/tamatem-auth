@@ -51,6 +51,9 @@ this method is to get the purchased items
 #### getRedeemedItems()
 this method is to get the redeemed items (you can set the is_redeemed paramter value from the `AuthenticationBehaviour.cs` script)
 
+#### redeemInventories()
+this method is to set all non-redeemed items to redeemed and get the whole list
+
 
 ### Runtime/AuthenticationBehaviour.cs
 ### Class TamatemSDK
@@ -63,6 +66,8 @@ triggers native authentication process
 returns all items
 #### Item[] FilterInventory(bool isRedeemed)
 returns redeemed or non redeemed items based on isRedeemed
+#### Item[] RedeemAllInventories()
+returns redeemed items after setting them to redeemed
 #### GetUser()
 returns JToken containing the following
 ```json

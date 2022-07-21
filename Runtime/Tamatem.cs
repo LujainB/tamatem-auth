@@ -69,10 +69,12 @@ namespace AuthenticationScope
 
         public void loginSucceeded(JObject result) {
             //TODO: Handle your login data here
+            InfoText.text = "User logged in successfully";
         }
 
         public void loginFailed() {
             //TODO: Handle being failed to login here
+            InfoText.text = "Failed to login";
         }
 
         public void purchasedItemsResults(string result) {

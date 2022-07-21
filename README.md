@@ -4,7 +4,6 @@ This repository has been created to ease the job of authentication and integrati
 
 ## Unity Integration:
 
- // todo set gameID & redirectURI
 
 ## Android Setup:
 
@@ -32,8 +31,29 @@ Once your Unity project is ready and you want to setup your iOS game/app, please
 
 ## SDK API:
 
+### Runtime/Tamatem.cs
+
+#### Game Configuraton Constants
+- GAME_CLIENT_ID
+- GAME_SCHEME
+- GAME_REDIRECT_URI
+- GAME_DEVELOPMENT_ENV
+
+These values can be changed based on your game's configrations
+When setting GAME_DEVELOPMENT_ENV to true, means that it will connect the game to the dev server which is made for development purposed. Please make sure to set it to false before releasing to Production.
+
+#### authenticateUser()
+this method is to open the in-app browser to let the user login
+
+#### getPurchasedItems()
+this method is to get the purchased items
+
+#### getRedeemedItems()
+this method is to get the redeemed items (you can set the is_redeemed paramter value from the `AuthenticationBehaviour.cs` script)
+
+
 ### Runtime/AuthenticationBehaviour.cs
-###Class TamatemSDK
+### Class TamatemSDK
 
 #### bool IsloggedIn()
 returns if user is logged in

@@ -12,6 +12,7 @@ namespace AuthenticationScope
         void loginFailed();
         void purchasedItemsResults(string result);
         void redeemedItemsResults(string result);
+        void redeeemInventoriesResult(string result);
     }
 
     public class Tamatem : MonoBehaviour, DataRequestsProcess
@@ -33,7 +34,7 @@ namespace AuthenticationScope
             AuthenticationBehaviour instance = getAuthenticationBehaviour();
             if(instance == null) {
                 InfoText.text = "no instance found";
-               return; 
+               return;
             }
             instance.setParameters(this, GAME_CLIENT_ID, GAME_SCHEME, GAME_REDIRECT_URI, GAME_DEVELOPMENT_ENV);
             instance.InitializeAuth();
@@ -46,7 +47,7 @@ namespace AuthenticationScope
                 if(instance == null) {
                 InfoText.text = "no instance found";
             }
-               return; 
+               return;
             }
 
             InfoText.text = "Loading purchased items ...";
@@ -60,16 +61,30 @@ namespace AuthenticationScope
                 if(instance == null) {
                 InfoText.text = "no instance found";
             }
-               return; 
+               return;
             }
-            
+
             InfoText.text = "Loading redeemed items ...";
             instance.getRedeemedItems();
         }
 
+        public void redeemInventories() {
+            AuthenticationBehaviour instance = getAuthenticationBehaviour();
+            if(instance == null || instance.GetAccessToken() == null) {
+                InfoText.text = "You need to login first";
+                if(instance == null) {
+                InfoText.text = "no instance found";
+            }
+               return;
+            }
+
+            InfoText.text = "Redeeming items ...";
+            instance.redeemInventories();
+        }
+
         public void loginSucceeded(JObject result) {
             //TODO: Handle your login data here
-            InfoText.text = "User logged in successfully";
+            InfoText.text = "User Logged In Successfully";
         }
 
         public void loginFailed() {
@@ -84,7 +99,7 @@ namespace AuthenticationScope
                 InfoText.text = result;
             }
         }
-        
+
         public void redeemedItemsResults(string result) {
             if(result == null) {
                 InfoText.text = "Failed to retrieve redeemed items";
@@ -92,6 +107,13 @@ namespace AuthenticationScope
                 InfoText.text = result;
             }
         }
-        
+
+        public void redeeemInventoriesResult(string result) {
+            if(result == null) {
+                InfoText.text = "Failed to redeem items";
+            } else {
+                InfoText.text = result;
+            }
+        }
     }
 }

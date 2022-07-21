@@ -124,6 +124,19 @@ namespace AuthenticationScope
             });
         }
 
+        internal void redeemInventories() {
+            Debug.Log("redeemInventories");
+            if(_accessToken == null) {
+                return;
+            }
+
+            Debug.Log("add redeemInventories job");
+            AddJob(() => {
+                // Will run on main thread, hence issue is solved
+                StartCoroutine(RedeemAllInventories());
+            });
+        }
+
         internal void updateUserParameters(JObject result) {
 
             SetAccessToken(result["access_token"].ToObject<string>());
@@ -224,6 +237,22 @@ namespace AuthenticationScope
                 }
                 else {
                     dataRequestsInterface.redeemedItemsResults(www.downloadHandler.text);
+                    Debug.Log(www.downloadHandler.text);
+                }
+             }
+        }
+
+        internal IEnumerator RedeemAllInventories() {
+             using (UnityWebRequest www = UnityWebRequest.Get("https://tamatem.dev.be.starmena-streams.com/api/inventory-item/?is_redeemed=false&should_redeem=true")){
+                www.SetRequestHeader("Authorization", "Bearer " + _accessToken);
+                yield return www.Send();
+
+                if (www.result != UnityWebRequest.Result.Success) {
+                    dataRequestsInterface.redeeemInventoriesResult(null);
+                    Debug.Log(www.error);
+                }
+                else {
+                    dataRequestsInterface.redeeemInventoriesResult(www.downloadHandler.text);
                     Debug.Log(www.downloadHandler.text);
                 }
              }

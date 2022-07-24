@@ -273,8 +273,10 @@ namespace AuthenticationScope
             Debug.Log("Token retreived from Unity: " + obj);
 
             var result = JObject.Parse(obj);
-            mono.dataRequestsInterface.loginSucceeded(result);
             mono.updateUserParameters(result);
+            mono.AddJob(() => {
+                mono.dataRequestsInterface.loginSucceeded(result);
+            });
         }
 
         void onFail()

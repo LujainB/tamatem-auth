@@ -75,7 +75,7 @@ public class LoadingActivity extends Activity {
             new ApiController().login(code, redirectUri, TamatemAuth.getInstance().codeVerifier,
                     new TamatemAuth.AuthorizationCallback() {
                         @Override
-                        public void onSuccess(Object results) {
+                        public void onSuccess(String results) {
                             TamatemAuth.AuthorizationCallback authorizationCallback = TamatemAuth.getInstance().authorizationCallback;
                             if (authorizationCallback != null) {
                                 authorizationCallback.onSuccess(results);

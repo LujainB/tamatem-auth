@@ -2,6 +2,7 @@ package com.tamatem.auth;
 
 import androidx.annotation.NonNull;
 
+import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 
 import retrofit2.Call;
@@ -21,7 +22,7 @@ public class ApiController {
             @Override
             public void onResponse(@NonNull Call<Object> call, @NonNull Response<Object> response) {
                 if (response.isSuccessful()) {
-                    Object results = ((LinkedTreeMap) response.body()).get("results");
+                    String results = new Gson().toJson(((LinkedTreeMap) response.body()).get("results"));
                     authorizationCallback.onSuccess(results);
                     return;
                 }

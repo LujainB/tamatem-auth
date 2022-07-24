@@ -8,7 +8,6 @@ import retrofit2.http.POST;
 public interface LoginService {
 
     @Headers({
-            "Host:tamatem.dev.be.starmena-streams.com",
             "Content-Type:application/json",
             "User-Agent:Android",
     })

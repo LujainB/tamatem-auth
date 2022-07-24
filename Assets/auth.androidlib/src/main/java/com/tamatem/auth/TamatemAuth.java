@@ -67,7 +67,7 @@ public class TamatemAuth {
 
 
     public interface AuthorizationCallback {
-        void onSuccess(Object results);
+        void onSuccess(String results);
 
         void onFail();
     }

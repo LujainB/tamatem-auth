@@ -9,11 +9,16 @@ This repository has been created to ease the job of authentication and integrati
 
 Once your Unity project is ready and you want to setup your Android game/app, please follow the steps below:
 1. Go to File -> Build Settings...
-2. Make sure the "Export Project" checkbox is checked.
-3. Press on the Export button and choose the folder that will contain the Android project.
-4. Open the project using Android Studio.
-5. Go to "gradle.properites" file and add "android.useAndroidX=true" line
-6. Voila! you are ready to go and use your app.
+2. Click on Player Settings then make sure Android tab is selected.
+3. Open Publisher Settings panel.
+4. Check `Custom Gradle Properties Template` checkbox.
+5. Now Open `gradleTemplate.gradle` file and paste the following line at the end of file.
+```shell script
+    android.useAndroidX=true
+```
+6. Close the Player Settings screens and make sure the "Export Project" checkbox is checked.
+7. Press on the Export button and choose the folder that will contain the Android project.
+8. Open the project using Android Studio and run your app.
 
 
 ## iOS Setup:

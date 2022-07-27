@@ -54,10 +54,13 @@ this method is to open the in-app browser to let the user login
 this method is to get the purchased items
 
 #### getRedeemedItems()
-this method is to get the redeemed items (you can set the is_redeemed paramter value from the `AuthenticationBehaviour.cs` script)
+this method is to get the redeemed items (you can set the is_redeemed parameter value from the `AuthenticationBehaviour.cs` script)
 
-#### redeemInventories()
-this method is to set all non-redeemed items to redeemed and get the whole list
+#### redeemInventory()
+this method is to set a non-redeemed item to redeemed based on the inventory id
+
+#### connectPlayerData()
+this method is to connect player's data based on the json object that will be sent (placeholder contains a sample of the json).
 
 
 ### Runtime/AuthenticationBehaviour.cs
@@ -71,8 +74,10 @@ triggers native authentication process
 returns all items
 #### Item[] FilterInventory(bool isRedeemed)
 returns redeemed or non redeemed items based on isRedeemed
-#### Item[] RedeemAllInventories()
-returns redeemed items after setting them to redeemed
+#### Object RedeemInventory(int inventoryId)
+returns the status of the redeemed inventory
+#### Object ConnectPlayerData(string gamePlayerData)
+returns the token of the connected player's data
 #### GetUser()
 returns JToken containing the following
 ```json

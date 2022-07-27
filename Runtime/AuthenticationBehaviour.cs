@@ -124,16 +124,29 @@ namespace AuthenticationScope
             });
         }
 
-        internal void redeemInventories() {
-            Debug.Log("redeemInventories");
+        internal void connectData(string playerData) {
+            Debug.Log("connectData");
             if(_accessToken == null) {
                 return;
             }
 
-            Debug.Log("add redeemInventories job");
+            Debug.Log("add connectData job");
             AddJob(() => {
                 // Will run on main thread, hence issue is solved
-                StartCoroutine(RedeemAllInventories());
+                StartCoroutine(ConnectPlayerData(playerData));
+            });
+        }
+
+        internal void redeemInventory(int inventoryId) {
+            Debug.Log("redeemInventory");
+            if(_accessToken == null) {
+                return;
+            }
+
+            Debug.Log("add redeemInventory job");
+            AddJob(() => {
+                // Will run on main thread, hence issue is solved
+                StartCoroutine(RedeemInventory(inventoryId));
             });
         }
 
@@ -213,7 +226,7 @@ namespace AuthenticationScope
         internal IEnumerator PurchasedInventory() {
              using (UnityWebRequest www = UnityWebRequest.Get("https://tamatem.dev.be.starmena-streams.com/api/inventory-item/")){
                 www.SetRequestHeader("Authorization", "Bearer " + _accessToken);
-                yield return www.Send();
+                yield return www.SendWebRequest();
 
                 if (www.result != UnityWebRequest.Result.Success) {
                     dataRequestsInterface.purchasedItemsResults(null);
@@ -229,33 +242,63 @@ namespace AuthenticationScope
         internal IEnumerator FilterInventory(bool isRedeemed) {
              using (UnityWebRequest www = UnityWebRequest.Get("https://tamatem.dev.be.starmena-streams.com/api/inventory-item/?is_redeemed=" + isRedeemed)){
                 www.SetRequestHeader("Authorization", "Bearer " + _accessToken);
-                yield return www.Send();
+                yield return www.SendWebRequest();
 
                 if (www.result != UnityWebRequest.Result.Success) {
-                    dataRequestsInterface.redeemedItemsResults(null);
+                    dataRequestsInterface.redeeemInventoryResult(null);
                     Debug.Log(www.error);
                 }
                 else {
-                    dataRequestsInterface.redeemedItemsResults(www.downloadHandler.text);
+                    dataRequestsInterface.redeeemInventoryResult(www.downloadHandler.text);
                     Debug.Log(www.downloadHandler.text);
                 }
              }
         }
 
-        internal IEnumerator RedeemAllInventories() {
-             using (UnityWebRequest www = UnityWebRequest.Get("https://tamatem.dev.be.starmena-streams.com/api/inventory-item/?is_redeemed=false&should_redeem=true")){
-                www.SetRequestHeader("Authorization", "Bearer " + _accessToken);
-                yield return www.Send();
+        internal IEnumerator RedeemInventory(int inventoryId) {
+            string data = "{\"is_redeemed\":true}";
 
-                if (www.result != UnityWebRequest.Result.Success) {
-                    dataRequestsInterface.redeeemInventoriesResult(null);
-                    Debug.Log(www.error);
-                }
-                else {
-                    dataRequestsInterface.redeeemInventoriesResult(www.downloadHandler.text);
-                    Debug.Log(www.downloadHandler.text);
-                }
-             }
+            var www = new UnityWebRequest();
+            www.url = "https://tamatem.dev.be.starmena-streams.com/api/inventory/redeem/" + inventoryId + "/";
+            www.method = UnityWebRequest.kHttpVerbPUT;
+            www.downloadHandler = new DownloadHandlerBuffer();
+            www.uploadHandler = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(data));
+            www.SetRequestHeader("Accept", "application/json");
+            www.SetRequestHeader("Content-Type", "application/json");
+            www.SetRequestHeader("Authorization", "Bearer " + _accessToken);
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success) {
+                dataRequestsInterface.redeeemInventoryResult(null);
+                Debug.Log(www.error);
+            }
+            else {
+                dataRequestsInterface.redeeemInventoryResult(www.downloadHandler.text);
+                Debug.Log(www.downloadHandler.text);
+            }
+        }
+
+        internal IEnumerator ConnectPlayerData(string gamePlayerData) {
+            byte[] dataBytes = System.Text.Encoding.UTF8.GetBytes(gamePlayerData);
+
+            var www = new UnityWebRequest();
+            www.url = "https://tamatem.dev.be.starmena-streams.com/api/player/set-game-data/";
+            www.method = UnityWebRequest.kHttpVerbPOST;
+            www.downloadHandler = new DownloadHandlerBuffer();
+            www.uploadHandler = new UploadHandlerRaw(dataBytes);
+            www.SetRequestHeader("Accept", "application/json");
+            www.SetRequestHeader("Content-Type", "application/json");
+            www.SetRequestHeader("Authorization", "Bearer " + _accessToken);
+            yield return www.SendWebRequest();
+
+            if (www.result != UnityWebRequest.Result.Success) {
+                dataRequestsInterface.connectPlayerDataResult(null);
+                Debug.Log(www.error);
+            }
+            else {
+                dataRequestsInterface.connectPlayerDataResult(www.downloadHandler.text);
+                Debug.Log(www.downloadHandler.text);
+            }
         }
     }
 

@@ -245,11 +245,11 @@ namespace AuthenticationScope
                 yield return www.SendWebRequest();
 
                 if (www.result != UnityWebRequest.Result.Success) {
-                    dataRequestsInterface.redeeemInventoryResult(null);
+                    dataRequestsInterface.redeemedItemsResults(null);
                     Debug.Log(www.error);
                 }
                 else {
-                    dataRequestsInterface.redeeemInventoryResult(www.downloadHandler.text);
+                    dataRequestsInterface.redeemedItemsResults(www.downloadHandler.text);
                     Debug.Log(www.downloadHandler.text);
                 }
              }

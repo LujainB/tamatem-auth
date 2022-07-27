@@ -82,7 +82,7 @@ namespace AuthenticationScope
             }
 
             InfoText.text = "Redeeming items ...";
-            //change the following inventory id based on your logic and preference.
+            // TODO: change the following inventory id based on your logic and preference.
             instance.redeemInventory(61);
         }
 

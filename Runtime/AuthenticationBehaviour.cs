@@ -98,6 +98,19 @@ namespace AuthenticationScope
             #endif
         }
 
+        internal void getUserDataFromServer() {
+            Debug.Log("getUserDataFromServer");
+            if(_accessToken == null) {
+                return;
+            }
+
+            Debug.Log("add getUserDataFromServer job");
+            AddJob(() => {
+                // Will run on main thread, hence issue is solved
+                StartCoroutine(GetUser());
+            });
+        }
+
         internal void getPurchasedItems() {
             Debug.Log("getPurchasedItems");
             if(_accessToken == null) {
@@ -155,7 +168,6 @@ namespace AuthenticationScope
             SetAccessToken(result["access_token"].ToObject<string>());
             SetRefreshToken(result["refresh_token"].ToObject<string>());
             SetExpiry(result["expires_in"].ToObject<long>());
-            SetUser(result["user"]);
         }
 
         private DateTime _JanFirst1970 = new DateTime(1970, 1, 1);
@@ -196,17 +208,6 @@ namespace AuthenticationScope
             Debug.Log("Expiry " + _expiry);
         }
 
-        internal JToken GetUser()
-        {
-            return _user;
-        }
-
-        internal void SetUser(JToken user)
-        {
-            _user = user;
-            Debug.Log("User " + _user);
-        }
-
         private long _getTime()
         {
             return (long)((DateTime.Now.ToUniversalTime() - _JanFirst1970).TotalMilliseconds + 0.5);
@@ -221,6 +222,22 @@ namespace AuthenticationScope
            else {
                 return true;
            }
+        }
+
+        internal IEnumerator GetUser() {
+             using (UnityWebRequest www = UnityWebRequest.Get("https://tamatem.dev.be.starmena-streams.com/api/player/")){
+                www.SetRequestHeader("Authorization", "Bearer " + _accessToken);
+                yield return www.SendWebRequest();
+
+                if (www.result != UnityWebRequest.Result.Success) {
+                    dataRequestsInterface.getUserResult(null);
+                    Debug.Log(www.error);
+                }
+                else {
+                    dataRequestsInterface.getUserResult(www.downloadHandler.text);
+                    Debug.Log(www.downloadHandler.text);
+                }
+             }
         }
 
         internal IEnumerator PurchasedInventory() {

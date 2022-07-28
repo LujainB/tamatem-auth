@@ -50,6 +50,9 @@ When setting GAME_DEVELOPMENT_ENV to true, means that it will connect the game t
 #### authenticateUser()
 this method is to open the in-app browser to let the user login
 
+#### getUserInfo()
+this method is to get the logged-in user object
+
 #### getPurchasedItems()
 this method is to get the purchased items
 
@@ -70,6 +73,8 @@ this method is to connect player's data based on the json object that will be se
 returns if user is logged in
 #### void InitializeAuth()
 triggers native authentication process
+#### User GetUser()
+returns the logged-in user based on the sent token
 #### Item[] PurchasedInventory()
 returns all items
 #### Item[] FilterInventory(bool isRedeemed)

@@ -11,6 +11,7 @@ namespace AuthenticationScope
     public interface DataRequestsProcess {
         void loginSucceeded(JObject result);
         void loginFailed();
+        void getUserResult(string result);
         void purchasedItemsResults(string result);
         void redeemedItemsResults(string result);
         void redeeemInventoryResult(string result);
@@ -41,6 +42,20 @@ namespace AuthenticationScope
             }
             instance.setParameters(this, GAME_CLIENT_ID, GAME_SCHEME, GAME_REDIRECT_URI, GAME_DEVELOPMENT_ENV);
             instance.InitializeAuth();
+        }
+
+        public void getUserInfo() {
+            AuthenticationBehaviour instance = getAuthenticationBehaviour();
+            if(instance == null || instance.GetAccessToken() == null) {
+                InfoText.text = "You need to login first";
+                if(instance == null) {
+                    InfoText.text = "no instance found";
+                }
+               return;
+            }
+
+            InfoText.text = "Loading user info ...";
+            instance.getUserDataFromServer();
         }
 
         public void getPurchasedItems() {
@@ -82,7 +97,7 @@ namespace AuthenticationScope
             }
 
             InfoText.text = "Redeeming items ...";
-            // TODO: change the following inventory id based on your logic and preference.
+            // TODO: change the following inventory id based on your logic and preference for the non-redeemed inventories.
             instance.redeemInventory(61);
         }
 
@@ -148,6 +163,14 @@ namespace AuthenticationScope
         public void connectPlayerDataResult(string result) {
             if(result == null) {
                 InfoText.text = "Failed to connect player data";
+            } else {
+                InfoText.text = result;
+            }
+        }
+
+        public void getUserResult(string result) {
+            if(result == null) {
+                InfoText.text = "Failed to get user info";
             } else {
                 InfoText.text = result;
             }

@@ -3,7 +3,17 @@
 This repository has been created to ease the job of authentication and integration process with Tamatem platform just by implementing the following steps:
 
 ## Unity Integration:
-
+All you need to do at this stage is the following:
+1. Download the `tamatem-sdk.unitypackage` file on your machine.
+2. Double click on the unitypackage file and import all the files inside it.
+##### The following steps are needed to check that everything is in place to use it properly
+3. Now go to Assets/Scenes and double click on SampleScene.
+4. From the Heirarchy panel, remove TamatemPrefab (if it exists).
+5. From the Project panel go to Assets folder then drag and drop the TamatemPrefab file to the SampleScene and make sure that it contains AuthenticationBehaviour.cs and Tamatem.cs scripts attached to it as components.
+6. Now go inside the Main Camera from Heirarchy panel then drag the InfoText component to the Info Text field in Tamatem script inside the Inspector panel and DataPlayerInput into the InputField.
+7. Click on the LoginButton from Heirarchy panel, drag and drop TamatemPrefab to the OnClick in the Inspector panel and choose authenticateUser function from Tamatem script.
+8. Repeat step number 5 for the UserButton, PurchasedButton, RedeemedButton, RedeemInvButton and ConnectDataButton then choose getUserInfo, getPurchasedItems, getRedeemedItems, redeemInventory and connectPlayerData functions respectively.
+9. Now run your app on Android or iOS to enjoy the full functionality.
 
 ## Android Setup:
 
@@ -28,9 +38,9 @@ Once your Unity project is ready and you want to setup your Android game/app, pl
 ```shell script
     android.useAndroidX=true
 ```
-7. Close the Player Settings screens and make sure the "Export Project" checkbox is checked.
+7. Close the Player Settings screens and now you can either run the app directly using the `Build And Run` button or by checking the `Export Project` checkbox.
 8. Press on the Export button and choose the folder that will contain the Android project.
-9. Open the project using Android Studio to use your app.
+9. Open the project using Android Studio to enjoy using your app.
 
 
 ## iOS Setup:
@@ -64,6 +74,22 @@ this method is to open the in-app browser to let the user login
 
 #### getUserInfo()
 this method is to get the logged-in user object
+```json
+{
+"id": 16,
+"first_name": "Moath Test",
+"last_name": "Test",
+"email": "tesasdt+1@teasdsa3dasdasdasdst.com",
+"country": "american-samoa",
+"phone_number": "+962797351170",
+"date_of_birth": "2022-05-14",
+"sign_up_through": "email",
+"gender": "f",
+"qr_code": "/media/qr-codes/PR22000006.png",
+"avatar": null,
+"tamatem_id": "PR22000006"
+}
+```
 
 #### getPurchasedItems()
 this method is to get the purchased items
@@ -97,19 +123,3 @@ returns the status of the redeemed inventory
 returns the token of the connected player's data
 #### GetUser()
 returns JToken containing the following
-```json
-{
-"id": 16,
-"first_name": "Moath Test",
-"last_name": "Test",
-"email": "tesasdt+1@teasdsa3dasdasdasdst.com",
-"country": "american-samoa",
-"phone_number": "+962797351170",
-"date_of_birth": "2022-05-14",
-"sign_up_through": "email",
-"gender": "f",
-"qr_code": "/media/qr-codes/PR22000006.png",
-"avatar": null,
-"tamatem_id": "PR22000006"
-}
-```

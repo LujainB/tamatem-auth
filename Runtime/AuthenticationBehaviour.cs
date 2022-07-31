@@ -65,8 +65,10 @@ namespace AuthenticationScope
             Debug.Log("Message received: " + tokenModel);
 
             var result = JObject.Parse(tokenModel);
-            mono.dataRequestsInterface.loginSucceeded(result);
             mono.updateUserParameters(result);
+            mono.AddJob(() => {
+                mono.dataRequestsInterface.loginSucceeded(result);
+            });
         }
 
         void Update() {

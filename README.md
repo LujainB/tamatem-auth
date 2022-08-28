@@ -47,6 +47,11 @@ Once your Unity project is ready and you want to setup your iOS game/app, please
 These values can be changed based on your game's configrations
 When setting GAME_DEVELOPMENT_ENV to true, means that it will connect the game to the dev server which is made for development purposed. Please make sure to set it to false before releasing to Production.
 
+The first part in GAME_REDIRECT_URL it is the scheme. 
+ex: 
+GAME_SCHEME = “SAMPLE”;
+GAME_REDIRECT_URI = “SAMPLE://oauth-callback”;
+
 #### authenticateUser()
 this method is to open the in-app browser to let the user login
 
